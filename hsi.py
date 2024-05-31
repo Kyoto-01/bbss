@@ -2,7 +2,7 @@ import numpy
 import cv2
 
 
-HUE_MAX = 180
+HUE_MAX = 180 / numpy.pi
 SATURATION_MAX = 100
 INTENSITY_MAX = 255
 
@@ -47,7 +47,7 @@ class HSI:
         hue = numpy.arccos(numerator / denominator)
         hue[self.__chB > self.__chG] = (
             ((360 * numpy.pi) / 180) - hue[self.__chB > self.__chG])
-        hue = (hue * HUE_MAX) / numpy.pi
+        hue = hue * HUE_MAX
 
         return hue
         
@@ -84,3 +84,29 @@ class HSI:
         intensity = self.calculate_intensity()
 
         return (hue, saturation, intensity)
+    
+    def create_hsi_mask(
+        self,
+        minHue: "float" = 0, 
+        maxHue: "float" = HUE_MAX,
+        minSaturation: "float" = 0,
+        maxSaturation: "float" = SATURATION_MAX,
+        minIntensity: "float" = 0,
+        maxIntensity: "float" = INTENSITY_MAX,
+    ):
+        mask = numpy.zeros(self.__chR.shape)
+        h, s, i = self.convert_rgb_to_hsi()
+
+        for r in range(h.shape[0]):
+            for c in range(h.shape[1]):
+                hueCheck = (minHue <= h[r, c] <= maxHue)
+                hueCheck = hueCheck or (minHue > maxHue and \
+                    (minHue <= h[r, c] <= 360 or 0 <= h[r, c] <= maxHue))
+                
+                saturationCheck = (minSaturation <= s[r, c] <= maxSaturation)
+                intensityCheck = (minIntensity <= i[r, c] <= maxIntensity)
+
+                if (hueCheck and saturationCheck and intensityCheck):
+                    mask[r, c] = 1  
+
+        return mask
