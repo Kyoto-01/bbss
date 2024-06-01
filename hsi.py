@@ -94,19 +94,16 @@ class HSI:
         minIntensity: "float" = 0,
         maxIntensity: "float" = INTENSITY_MAX,
     ):
-        mask = numpy.zeros(self.__chR.shape)
         h, s, i = self.convert_rgb_to_hsi()
 
-        for r in range(h.shape[0]):
-            for c in range(h.shape[1]):
-                hueCheck = (minHue <= h[r, c] <= maxHue)
-                hueCheck = hueCheck or (minHue > maxHue and \
-                    (minHue <= h[r, c] <= 360 or 0 <= h[r, c] <= maxHue))
-                
-                saturationCheck = (minSaturation <= s[r, c] <= maxSaturation)
-                intensityCheck = (minIntensity <= i[r, c] <= maxIntensity)
+        hueCheck1stCase = (h >= minHue) & (h <= maxHue)
+        hueCheck2ndCase = (minHue > maxHue) & \
+            (((h >= minHue) & (h <= 360)) | ((h >= 0) & (h <= maxHue)))
+        hueCheck = hueCheck1stCase | hueCheck2ndCase
 
-                if (hueCheck and saturationCheck and intensityCheck):
-                    mask[r, c] = 1  
+        saturationCheck = (s >= minSaturation) & (s <= maxSaturation)
+        intensityCheck = (i >= minIntensity) & (i <= maxIntensity)
+
+        mask = hueCheck & saturationCheck & intensityCheck
 
         return mask
