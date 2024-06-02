@@ -2,7 +2,7 @@ import numpy
 import cv2
 
 
-HUE_MAX = 180 / numpy.pi
+HUE_MAX = 360
 SATURATION_MAX = 100
 INTENSITY_MAX = 255
 
@@ -47,7 +47,7 @@ class HSI:
         hue = numpy.arccos(numerator / denominator)
         hue[self.__chB > self.__chG] = (
             ((360 * numpy.pi) / 180) - hue[self.__chB > self.__chG])
-        hue = hue * HUE_MAX
+        hue = hue * (HUE_MAX / 2 / numpy.pi)
 
         return hue
         
