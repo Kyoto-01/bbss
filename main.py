@@ -2,6 +2,7 @@ from os import system
 
 from tkinter import (
     ttk, 
+    IntVar,
     filedialog
 )
 
@@ -11,6 +12,11 @@ from PIL import (
 )
 
 from image_scanner import ImageScanner
+from hsi import (
+    HUE_MAX,
+    SATURATION_MAX,
+    INTENSITY_MAX
+)
 
 
 class App(ttk.Frame):
@@ -47,24 +53,32 @@ class App(ttk.Frame):
         self.__lblHueShadow: "ttk.Label" = None
         self.__spbHueShadowMin: "ttk.Spinbox" = None
         self.__spbHueShadowMax: "ttk.Spinbox" = None
+        self.__varHueShadowMin: "IntVar" = None
+        self.__varHueShadowMax: "IntVar" = None
 
         # right frame - options - hue light
         self.__frmHueLight: "ttk.Frame" = None
         self.__lblHueLight: "ttk.Label" = None
         self.__spbHueLightMin: "ttk.Spinbox" = None
         self.__spbHueLightMax: "ttk.Spinbox" = None
+        self.__varHueLightMin: "IntVar" = None
+        self.__varHueLightMax: "IntVar" = None
 
         # right frame - options - saturation
         self.__frmSaturation: "ttk.Frame" = None
         self.__lblSaturation: "ttk.Label" = None
         self.__spbSaturationMin: "ttk.Spinbox" = None
         self.__spbSaturationMax: "ttk.Spinbox" = None
+        self.__varSaturationMin: "IntVar" = None
+        self.__varSaturationMax: "IntVar" = None
 
         # right frame - options - intensity
         self.__frmIntensity: "ttk.Frame" = None
         self.__lblIntensity: "ttk.Label" = None
         self.__spbIntensityMin: "ttk.Spinbox" = None
         self.__spbIntensityMax: "ttk.Spinbox" = None
+        self.__varIntensityMin: "IntVar" = None
+        self.__varIntensityMax: "IntVar" = None
 
         self.__setup(
             title, 
@@ -118,7 +132,7 @@ class App(ttk.Frame):
         self
     ):
         image = Image.open(self.__imagePath)
-        base_width = 300
+        base_width = 500
         wpercent = (base_width / float(image.size[0]))
         hsize = int((float(image.size[1]) * float(wpercent)))
         image = image.resize((base_width, hsize), Image.Resampling.LANCZOS)
@@ -191,15 +205,43 @@ class App(ttk.Frame):
         self,
         master
     ):
-        self.__spbHueShadowMin = ttk.Spinbox(master)
+        self.__varHueShadowMin = IntVar(value=0)
+        self.__spbHueShadowMin = ttk.Spinbox(
+            master, 
+            from_=0,
+            to=HUE_MAX,
+            textvariable=self.__varHueShadowMin,
+            command=self.update_spb_hue_shadow_min
+        )
         self.__spbHueShadowMin.pack()
+
+    def update_spb_hue_shadow_min(
+        self
+    ):
+        self.__scanner.lastHueShadowMin = self.__varHueShadowMin.get()
+        self.__scanner.scan_image()
+        self.__update_image_view()
 
     def create_spb_hue_shadow_max(
         self,
         master
     ):
-        self.__spbHueShadowMax = ttk.Spinbox(master)
+        self.__varHueShadowMax = IntVar(value=0)
+        self.__spbHueShadowMax = ttk.Spinbox(
+            master, 
+            from_=0,
+            to=HUE_MAX,
+            textvariable=self.__varHueShadowMax,
+            command=self.update_spb_hue_shadow_max
+        )
         self.__spbHueShadowMax.pack()
+
+    def update_spb_hue_shadow_max(
+        self
+    ):
+        self.__scanner.lastHueShadowMax = self.__varHueShadowMax.get()
+        self.__scanner.scan_image()
+        self.__update_image_view()
 
     def __create_frm_hue_light(
         self, 
@@ -225,15 +267,43 @@ class App(ttk.Frame):
         self,
         master
     ):
-        self.__spbHueLightMin = ttk.Spinbox(master)
+        self.__varHueLightMin = IntVar(value=0)
+        self.__spbHueLightMin = ttk.Spinbox(
+            master, 
+            from_=0,
+            to=HUE_MAX,
+            textvariable=self.__varHueLightMin,
+            command=self.update_spb_hue_light_min
+        )
         self.__spbHueLightMin.pack()
+
+    def update_spb_hue_light_min(
+        self
+    ):
+        self.__scanner.lastHueLightMin = self.__varHueLightMin.get()
+        self.__scanner.scan_image()
+        self.__update_image_view()
 
     def create_spb_hue_light_max(
         self,
         master
     ):
-        self.__spbHueLightMax = ttk.Spinbox(master)
+        self.__varHueLightMax = IntVar(value=0)
+        self.__spbHueLightMax = ttk.Spinbox(
+            master, 
+            from_=0,
+            to=HUE_MAX,
+            textvariable=self.__varHueLightMax,
+            command=self.update_spb_hue_light_max
+        )
         self.__spbHueLightMax.pack()
+
+    def update_spb_hue_light_max(
+        self
+    ):
+        self.__scanner.lastHueLightMax = self.__varHueLightMax.get()
+        self.__scanner.scan_image()
+        self.__update_image_view()
 
     def __create_frm_saturation(
         self, 
@@ -259,15 +329,43 @@ class App(ttk.Frame):
         self,
         master
     ):
-        self.__spbSaturationMin = ttk.Spinbox(master)
+        self.__varSaturationMin = IntVar(value=0)
+        self.__spbSaturationMin = ttk.Spinbox(
+            master, 
+            from_=0,
+            to=SATURATION_MAX,
+            textvariable=self.__varSaturationMin,
+            command=self.update_spb_saturation_min
+        )
         self.__spbSaturationMin.pack()
+
+    def update_spb_saturation_min(
+        self
+    ):
+        self.__scanner.lastSaturationMin = self.__varSaturationMin.get()
+        self.__scanner.scan_image()
+        self.__update_image_view()
 
     def create_spb_saturation_max(
         self,
         master
     ):
-        self.__spbSaturationMax = ttk.Spinbox(master)
+        self.__varSaturationMax = IntVar(value=0)
+        self.__spbSaturationMax = ttk.Spinbox(
+            master, 
+            from_=0,
+            to=SATURATION_MAX,
+            textvariable=self.__varSaturationMax,
+            command=self.update_spb_saturation_max
+        )
         self.__spbSaturationMax.pack()
+
+    def update_spb_saturation_max(
+        self
+    ):
+        self.__scanner.lastSaturationMax = self.__varSaturationMax.get()
+        self.__scanner.scan_image()
+        self.__update_image_view()
 
     def __create_frm_intensity(
         self, 
@@ -293,17 +391,20 @@ class App(ttk.Frame):
         self,
         master
     ):
+        self.__varIntensityMin = IntVar(value=0)
         self.__spbIntensityMin = ttk.Spinbox(
-            master,
+            master, 
+            from_=0,
+            to=INTENSITY_MAX,
+            textvariable=self.__varIntensityMin,
             command=self.update_spb_intensity_min
         )
         self.__spbIntensityMin.pack()
 
     def update_spb_intensity_min(
-        self,
-        value
+        self
     ):
-        self.__scanner.lastIntensityMin = value
+        self.__scanner.lastIntensityMin = self.__varIntensityMin.get()
         self.__scanner.scan_image()
         self.__update_image_view()
 
@@ -311,17 +412,20 @@ class App(ttk.Frame):
         self,
         master
     ):
+        self.__varIntensityMax = IntVar(value=0)
         self.__spbIntensityMax = ttk.Spinbox(
-            master,
+            master, 
+            from_=0,
+            to=INTENSITY_MAX,
+            textvariable=self.__varIntensityMax,
             command=self.update_spb_intensity_max
         )
         self.__spbIntensityMax.pack()
     
     def update_spb_intensity_max(
-        self,
-        value
+        self
     ):
-        self.__scanner.lastIntensityMax = value
+        self.__scanner.lastIntensityMax = self.__varIntensityMax.get()
         self.__scanner.scan_image()
         self.__update_image_view()
 

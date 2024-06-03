@@ -146,8 +146,8 @@ class ImageScanner:
         )
 
         scannedImage = numpy.ones(self.__imageRGB.shape) * 255
+        scannedImage[lineMask == 1] = [0, 0, 0]
         scannedImage[shadowMask == 1] = [0, 0, 255]
         scannedImage[lightMask == 1] = [255, 0, 0]
-        scannedImage[lineMask == 1] = [0, 0, 0]
 
         cv2.imwrite(self.__outputImagePath, scannedImage)
