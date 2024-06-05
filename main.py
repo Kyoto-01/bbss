@@ -19,7 +19,59 @@ from hsi import (
 )
 
 
-class App(ttk.Frame):
+class FrmImageView(ttk.Frame):
+    
+    def __init__(
+        self,
+        imagePath: "str"
+    ):
+        self.__imagePath: "str" = imagePath
+        self.__image: "ImageTk" = None
+        self.__lblImage: "ttk.Label" = None
+
+
+class FrmImageSelection(ttk.Frame):
+
+    def __init__(
+        self
+    ):
+        self.__btnSelectImage: "ttk.Button" = None
+
+
+class FrmImageConfig(ttk.Frame):
+
+    def __init__(
+        self
+    ):
+        self.__lblLine: "ttk.Label" = None
+
+        self.__lblHueMin: "ttk.Spinbox" = None
+        self.__lblHueMax: "ttk.Spinbox" = None
+        self.__spbHueMin: "ttk.Spinbox" = None
+        self.__spbHueMax: "ttk.Spinbox" = None
+        self.__varHueMin: "IntVar" = None
+        self.__varHueMax: "IntVar" = None
+
+        self.__lblSaturationMin: "ttk.Spinbox" = None
+        self.__lblSaturationMax: "ttk.Spinbox" = None
+        self.__spbSaturationMin: "ttk.Spinbox" = None
+        self.__spbSaturationMax: "ttk.Spinbox" = None
+        self.__varSaturationMin: "IntVar" = None
+        self.__varSaturationMax: "IntVar" = None
+
+        self.__lblIntensityMin: "ttk.Spinbox" = None
+        self.__lblIntensityMax: "ttk.Spinbox" = None
+        self.__spbIntensityMin: "ttk.Spinbox" = None
+        self.__spbIntensityMax: "ttk.Spinbox" = None
+        self.__varIntensityMin: "IntVar" = None
+        self.__varIntensityMax: "IntVar" = None
+
+
+class FrmOptions(ttk.Frame):
+    pass
+
+
+class FrmApp(ttk.Frame):
 
     def __init__(
         self, 
@@ -35,50 +87,18 @@ class App(ttk.Frame):
         
         self.__scanner: "ImageScanner" = None
 
-        # left frame - image view
-        self.__imagePath: "str" = imagePath
-        self.__image: "ImageTk" = None
-        self.__frmImage: "ttk.Frame" = None
-        self.__lblImage: "ttk.Label" = None
-
-        # right frame - options
-        self.__frmOptions: "ttk.Frame" = None
+        self.__frmImageView: "FrmImageView" = None
+        self.__frmOptions: "FrmOptions" = None
 
         # right frame - options - hue shadow
-        self.__frmSelectImage: "ttk.Frame" = None
-        self.__btnSelectImage: "ttk.Button" = None
 
-        # right frame - options - hue shadow
-        self.__frmHueShadow: "ttk.Frame" = None
-        self.__lblHueShadow: "ttk.Label" = None
-        self.__spbHueShadowMin: "ttk.Spinbox" = None
-        self.__spbHueShadowMax: "ttk.Spinbox" = None
-        self.__varHueShadowMin: "IntVar" = None
-        self.__varHueShadowMax: "IntVar" = None
 
-        # right frame - options - hue light
-        self.__frmHueLight: "ttk.Frame" = None
-        self.__lblHueLight: "ttk.Label" = None
-        self.__spbHueLightMin: "ttk.Spinbox" = None
-        self.__spbHueLightMax: "ttk.Spinbox" = None
-        self.__varHueLightMin: "IntVar" = None
-        self.__varHueLightMax: "IntVar" = None
 
-        # right frame - options - saturation
-        self.__frmSaturation: "ttk.Frame" = None
-        self.__lblSaturation: "ttk.Label" = None
-        self.__spbSaturationMin: "ttk.Spinbox" = None
-        self.__spbSaturationMax: "ttk.Spinbox" = None
-        self.__varSaturationMin: "IntVar" = None
-        self.__varSaturationMax: "IntVar" = None
 
         # right frame - options - intensity
         self.__frmIntensity: "ttk.Frame" = None
         self.__lblIntensity: "ttk.Label" = None
-        self.__spbIntensityMin: "ttk.Spinbox" = None
-        self.__spbIntensityMax: "ttk.Spinbox" = None
-        self.__varIntensityMin: "IntVar" = None
-        self.__varIntensityMax: "IntVar" = None
+
 
         self.__setup(
             title, 
@@ -91,7 +111,7 @@ class App(ttk.Frame):
 
     def __setup(
         self,
-        title: "str" = "App",
+        title: "str" = "FrmApp",
         maxWidth: "int" = 0,
         maxHeight: "int" = 0,
         minWidth: "int" = 0,
@@ -432,7 +452,7 @@ class App(ttk.Frame):
 
 system("cp output.bmp output_copy.bmp")
 
-app = App(
+FrmApp = FrmApp(
     imagePath="output.bmp",
     title="Sakuga Scan",
     minWidth=0,
@@ -441,7 +461,7 @@ app = App(
     maxHeight=0
 )
 
-app.mainloop()
+FrmApp.mainloop()
 
 system("cp output_copy.bmp output.bmp")
 system("rm output_copy.bmp")
