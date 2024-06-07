@@ -38,37 +38,38 @@ class FrmImageSelection(ttk.Frame):
         self.__btnSelectImage: "ttk.Button" = None
 
 
+class FrmImageConfigProperty(ttk.Frame):
+
+    def __init__(
+        self
+    ):
+        self.__lblPropertyName: "ttk.Spinbox" = None
+        self.__spbPropertyField: "ttk.Spinbox" = None
+        self.__varPropertyValue: "IntVar" = None
+
+
 class FrmImageConfig(ttk.Frame):
 
     def __init__(
         self
     ):
-        self.__lblLine: "ttk.Label" = None
-
-        self.__lblHueMin: "ttk.Spinbox" = None
-        self.__lblHueMax: "ttk.Spinbox" = None
-        self.__spbHueMin: "ttk.Spinbox" = None
-        self.__spbHueMax: "ttk.Spinbox" = None
-        self.__varHueMin: "IntVar" = None
-        self.__varHueMax: "IntVar" = None
-
-        self.__lblSaturationMin: "ttk.Spinbox" = None
-        self.__lblSaturationMax: "ttk.Spinbox" = None
-        self.__spbSaturationMin: "ttk.Spinbox" = None
-        self.__spbSaturationMax: "ttk.Spinbox" = None
-        self.__varSaturationMin: "IntVar" = None
-        self.__varSaturationMax: "IntVar" = None
-
-        self.__lblIntensityMin: "ttk.Spinbox" = None
-        self.__lblIntensityMax: "ttk.Spinbox" = None
-        self.__spbIntensityMin: "ttk.Spinbox" = None
-        self.__spbIntensityMax: "ttk.Spinbox" = None
-        self.__varIntensityMin: "IntVar" = None
-        self.__varIntensityMax: "IntVar" = None
+        self.__lblConfigName: "ttk.Label" = None
+        self.__frmHueMin: "FrmImageConfigProperty" = None
+        self.__frmHueMax: "FrmImageConfigProperty" = None
+        self.__frmSaturationMin: "FrmImageConfigProperty" = None
+        self.__frmSaturationMax: "FrmImageConfigProperty" = None
+        self.__frmIntensityMin: "FrmImageConfigProperty" = None
+        self.__frmIntensityMax: "FrmImageConfigProperty" = None
 
 
 class FrmOptions(ttk.Frame):
-    pass
+
+    def __init__(
+        self
+    ):
+        self.__frmImageShadowConfig: "FrmImageConfig" = None
+        self.__frmImageLightConfig: "FrmImageConfig" = None
+        self.__frmImageLineConfig: "FrmImageConfig" = None
 
 
 class FrmApp(ttk.Frame):
@@ -86,19 +87,8 @@ class FrmApp(ttk.Frame):
         super().__init__(master)
         
         self.__scanner: "ImageScanner" = None
-
         self.__frmImageView: "FrmImageView" = None
         self.__frmOptions: "FrmOptions" = None
-
-        # right frame - options - hue shadow
-
-
-
-
-        # right frame - options - intensity
-        self.__frmIntensity: "ttk.Frame" = None
-        self.__lblIntensity: "ttk.Label" = None
-
 
         self.__setup(
             title, 
