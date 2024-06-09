@@ -21,14 +21,26 @@ class ImageScanner:
         self.__imageRGB: "cv2.Mat" = None
         self.__hsiFilter: "HSI" = None
         
-        self.__lastHueShadowMin: "int" = 0
-        self.__lastHueShadowMax: "int" = HUE_MAX
-        self.__lastHueLightMin: "int" = 0
-        self.__lastHueLightMax: "int" = HUE_MAX
-        self.__lastSaturationMin: "int" = 0
-        self.__lastSaturationMax: "int" = SATURATION_MAX
-        self.__lastIntensityMin: "int" = 0
-        self.__lastIntensityMax: "int" = INTENSITY_MAX
+        self.__lastShadowHueMin: "int" = 0
+        self.__lastShadowHueMax: "int" = HUE_MAX
+        self.__lastShadowSaturationMin: "int" = 0
+        self.__lastShadowSaturationMax: "int" = SATURATION_MAX
+        self.__lastShadowIntensityMin: "int" = 0
+        self.__lastShadowIntensityMax: "int" = INTENSITY_MAX
+
+        self.__lastLightHueMin: "int" = 0
+        self.__lastLightHueMax: "int" = HUE_MAX
+        self.__lastLightSaturationMin: "int" = 0
+        self.__lastLightSaturationMax: "int" = SATURATION_MAX
+        self.__lastLightIntensityMin: "int" = 0
+        self.__lastLightIntensityMax: "int" = INTENSITY_MAX
+
+        self.__lastLineHueMin: "int" = 0
+        self.__lastLineHueMax: "int" = HUE_MAX
+        self.__lastLineSaturationMin: "int" = 0
+        self.__lastLineSaturationMax: "int" = SATURATION_MAX
+        self.__lastLineIntensityMin: "int" = 0
+        self.__lastLineIntensityMax: "int" = INTENSITY_MAX
 
         self.__setup()
 
@@ -46,68 +58,148 @@ class ImageScanner:
         return self.__outputImagePath
 
     @property
-    def lastHueShadowMin(self):
-        return self.__lastHueShadowMin
+    def lastShadowHueMin(self):
+        return self.__lastShadowHueMin
 
-    @lastHueShadowMin.setter
-    def lastHueShadowMin(self, value):
-        self.__lastHueShadowMin = value
-
-    @property
-    def lastHueShadowMax(self):
-        return self.__lastHueShadowMax
-
-    @lastHueShadowMax.setter
-    def lastHueShadowMax(self, value):
-        self.__lastHueShadowMax = value
+    @lastShadowHueMin.setter
+    def lastShadowHueMin(self, value):
+        self.__lastShadowHueMin = value
 
     @property
-    def lastHueLightMin(self):
-        return self.__lastHueLightMin
+    def lastShadowHueMax(self):
+        return self.__lastShadowHueMax
 
-    @lastHueLightMin.setter
-    def lastHueLightMin(self, value):
-        self.__lastHueLightMin = value
-
-    @property
-    def lastHueLightMax(self):
-        return self.__lastHueLightMax
-
-    @lastHueLightMax.setter
-    def lastHueLightMax(self, value):
-        self.__lastHueLightMax = value
+    @lastShadowHueMax.setter
+    def lastShadowHueMax(self, value):
+        self.__lastShadowHueMax = value
 
     @property
-    def lastSaturationMin(self):
-        return self.__lastSaturationMin
+    def lastShadowSaturationMin(self):
+        return self.__lastShadowSaturationMin
 
-    @lastSaturationMin.setter
-    def lastSaturationMin(self, value):
-        self.__lastSaturationMin = value
-
-    @property
-    def lastSaturationMax(self):
-        return self.__lastSaturationMax
-
-    @lastSaturationMax.setter
-    def lastSaturationMax(self, value):
-        self.__lastSaturationMax = value
+    @lastShadowSaturationMin.setter
+    def lastShadowSaturationMin(self, value):
+        self.__lastShadowSaturationMin = value
 
     @property
-    def lastIntensityMin(self):
-        return self.__lastIntensityMin
+    def lastShadowSaturationMax(self):
+        return self.__lastShadowSaturationMax
 
-    @lastIntensityMin.setter
-    def lastIntensityMin(self, value):
-        self.__lastIntensityMin = value
+    @lastShadowSaturationMax.setter
+    def lastShadowSaturationMax(self, value):
+        self.__lastShadowSaturationMax = value
 
     @property
-    def lastIntensityMax(self):
-        return self.__lastIntensityMax
+    def lastShadowIntensityMin(self):
+        return self.__lastShadowIntensityMin
 
-    @lastIntensityMax.setter
-    def lastIntensityMax(self, value):
-        self.__lastIntensityMax = value
+    @lastShadowIntensityMin.setter
+    def lastShadowIntensityMin(self, value):
+        self.__lastShadowIntensityMin = value
+
+    @property
+    def lastShadowIntensityMax(self):
+        return self.__lastShadowIntensityMax
+
+    @lastShadowIntensityMax.setter
+    def lastShadowIntensityMax(self, value):
+        self.__lastShadowIntensityMax = value
+
+    @property
+    def lastLightHueMin(self):
+        return self.__lastLightHueMin
+
+    @lastLightHueMin.setter
+    def lastLightHueMin(self, value):
+        self.__lastLightHueMin = value
+
+    @property
+    def lastLightHueMax(self):
+        return self.__lastLightHueMax
+
+    @lastLightHueMax.setter
+    def lastLightHueMax(self, value):
+        self.__lastLightHueMax = value
+
+    @property
+    def lastLightSaturationMin(self):
+        return self.__lastLightSaturationMin
+
+    @lastLightSaturationMin.setter
+    def lastLightSaturationMin(self, value):
+        self.__lastLightSaturationMin = value
+
+    @property
+    def lastLightSaturationMax(self):
+        return self.__lastLightSaturationMax
+
+    @lastLightSaturationMax.setter
+    def lastLightSaturationMax(self, value):
+        self.__lastLightSaturationMax = value
+
+    @property
+    def lastLightIntensityMin(self):
+        return self.__lastLightIntensityMin
+
+    @lastLightIntensityMin.setter
+    def lastLightIntensityMin(self, value):
+        self.__lastLightIntensityMin = value
+
+    @property
+    def lastLightIntensityMax(self):
+        return self.__lastLightIntensityMax
+
+    @lastLightIntensityMax.setter
+    def lastLightIntensityMax(self, value):
+        self.__lastLightIntensityMax = value
+
+    @property
+    def lastLineHueMin(self):
+        return self.__lastLineHueMin
+
+    @lastLineHueMin.setter
+    def lastLineHueMin(self, value):
+        self.__lastLineHueMin = value
+
+    @property
+    def lastLineHueMax(self):
+        return self.__lastLineHueMax
+
+    @lastLineHueMax.setter
+    def lastLineHueMax(self, value):
+        self.__lastLineHueMax = value
+
+    @property
+    def lastLineSaturationMin(self):
+        return self.__lastLineSaturationMin
+
+    @lastLineSaturationMin.setter
+    def lastLineSaturationMin(self, value):
+        self.__lastLineSaturationMin = value
+
+    @property
+    def lastLineSaturationMax(self):
+        return self.__lastLineSaturationMax
+
+    @lastLineSaturationMax.setter
+    def lastLineSaturationMax(self, value):
+        self.__lastLineSaturationMax = value
+
+    @property
+    def lastLineIntensityMin(self):
+        return self.__lastLineIntensityMin
+
+    @lastLineIntensityMin.setter
+    def lastLineIntensityMin(self, value):
+        self.__lastLineIntensityMin = value
+
+    @property
+    def lastLineIntensityMax(self):
+        return self.__lastLineIntensityMax
+
+    @lastLineIntensityMax.setter
+    def lastLineIntensityMax(self, value):
+        self.__lastLineIntensityMax = value
 
     def __setup(
         self
@@ -121,28 +213,30 @@ class ImageScanner:
         self
     ):
         shadowMask = self.__hsiFilter.create_hsi_mask(
-            minHue=self.__lastHueShadowMin,
-            maxHue=self.__lastHueShadowMax,
-            minIntensity=self.__lastIntensityMin,
-            maxIntensity=self.__lastIntensityMax,
-            minSaturation=self.__lastSaturationMin,
-            maxSaturation=self.__lastSaturationMax
+            minHue=self.__lastShadowHueMin,
+            maxHue=self.__lastShadowHueMax,
+            minSaturation=self.__lastShadowSaturationMin,
+            maxSaturation=self.__lastShadowSaturationMax,
+            minIntensity=self.__lastShadowIntensityMin,
+            maxIntensity=self.__lastShadowIntensityMax
         )
 
         lightMask = self.__hsiFilter.create_hsi_mask(
-            minHue=self.__lastHueLightMin,
-            maxHue=self.__lastHueLightMax,
-            minIntensity=self.__lastIntensityMin,
-            maxIntensity=self.__lastIntensityMax,
-            minSaturation=self.__lastSaturationMin,
-            maxSaturation=self.__lastSaturationMax
+            minHue=self.__lastLightHueMin,
+            maxHue=self.__lastLightHueMax,
+            minSaturation=self.__lastLightSaturationMin,
+            maxSaturation=self.__lastLightSaturationMax,
+            minIntensity=self.__lastLightIntensityMin,
+            maxIntensity=self.__lastLightIntensityMax
         )
 
         lineMask = self.__hsiFilter.create_hsi_mask(
-            minIntensity=self.__lastIntensityMin,
-            maxIntensity=self.__lastIntensityMax,
-            minSaturation=self.__lastSaturationMin,
-            maxSaturation=self.__lastSaturationMax
+            minHue=self.__lastLineHueMin,
+            maxHue=self.__lastLineHueMax,
+            minSaturation=self.__lastLineSaturationMin,
+            maxSaturation=self.__lastLineSaturationMax,
+            minIntensity=self.__lastLineIntensityMin,
+            maxIntensity=self.__lastLineIntensityMax
         )
 
         scannedImage = numpy.ones(self.__imageRGB.shape) * 255
