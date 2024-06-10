@@ -111,9 +111,10 @@ class FrmImageFile(ttk.Frame):
         self.__imageView.update_image()   
 
     def __save_image(self):
-        dstDirectory = filedialog.askopenfilename(
+        dstDirectory = filedialog.asksaveasfilename(
             title="Save the image",
-            initialdir="/"
+            initialdir="/",
+            defaultextension=".bmp"
         )
         self.__imageView.save_image(dstDirectory)
 
