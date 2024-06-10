@@ -16,6 +16,7 @@ from hsi import (
     SATURATION_MAX,
     INTENSITY_MAX
 )
+from startup_config import config
 
 
 class FrmImageView(ttk.Frame):
@@ -123,12 +124,14 @@ class FrmImageOptions(ttk.Frame):
         self,
         master,
         imageView: "FrmImageView",
-        imageScanner: "ImageScanner"
+        imageScanner: "ImageScanner",
+        defaultValues: "dict" = {}
     ):
         super().__init__(master)
 
         self.__imageView: "FrmImageView" = imageView
         self.__imageScanner: "ImageScanner" = imageScanner
+        self.__defaultValues: "dict" = defaultValues
 
         self.__frmShadowOption: "FrmImageOption" = None
         self.__frmLightOption: "FrmImageOption" = None
@@ -151,9 +154,21 @@ class FrmImageOptions(ttk.Frame):
             saturationMinCallback=self.__shadow_saturation_min_callback,
             saturationMaxCallback=self.__shadow_saturation_max_callback,
             intensityMinCallback=self.__shadow_intensity_min_callback,
-            intensityMaxCallback=self.__shadow_intensity_max_callback
+            intensityMaxCallback=self.__shadow_intensity_max_callback,
+            hueMinDefault=self.__defaultValues.get("shadow_min_hue", 0),
+            hueMaxDefault=self.__defaultValues.get("shadow_max_hue", 0),
+            saturationMinDefault=self.__defaultValues.get("shadow_min_saturation", 0),
+            saturationMaxDefault=self.__defaultValues.get("shadow_max_saturation", 0),
+            intensityMinDefault=self.__defaultValues.get("shadow_min_intensity", 0),
+            intensityMaxDefault=self.__defaultValues.get("shadow_max_intensity", 0)
         )
         self.__frmShadowOption.pack()
+        self.__shadow_hue_min_callback()
+        self.__shadow_hue_max_callback()
+        self.__shadow_saturation_min_callback()
+        self.__shadow_saturation_max_callback()
+        self.__shadow_intensity_min_callback()
+        self.__shadow_intensity_max_callback()
 
     def __create_frm_light_option(
         self
@@ -168,9 +183,21 @@ class FrmImageOptions(ttk.Frame):
             saturationMinCallback=self.__light_saturation_min_callback,
             saturationMaxCallback=self.__light_saturation_max_callback,
             intensityMinCallback=self.__light_intensity_min_callback,
-            intensityMaxCallback=self.__light_intensity_max_callback
+            intensityMaxCallback=self.__light_intensity_max_callback,
+            hueMinDefault=self.__defaultValues.get("light_min_hue", 0),
+            hueMaxDefault=self.__defaultValues.get("light_max_hue", 0),
+            saturationMinDefault=self.__defaultValues.get("light_min_saturation", 0),
+            saturationMaxDefault=self.__defaultValues.get("light_max_saturation", 0),
+            intensityMinDefault=self.__defaultValues.get("light_min_intensity", 0),
+            intensityMaxDefault=self.__defaultValues.get("light_max_intensity", 0)
         )
         self.__frmLightOption.pack()
+        self.__light_hue_min_callback()
+        self.__light_hue_max_callback()
+        self.__light_saturation_min_callback()
+        self.__light_saturation_max_callback()
+        self.__light_intensity_min_callback()
+        self.__light_intensity_max_callback()
 
     def __create_frm_line_option(
         self
@@ -185,116 +212,128 @@ class FrmImageOptions(ttk.Frame):
             saturationMinCallback=self.__line_saturation_min_callback,
             saturationMaxCallback=self.__line_saturation_max_callback,
             intensityMinCallback=self.__line_intensity_min_callback,
-            intensityMaxCallback=self.__line_intensity_max_callback
+            intensityMaxCallback=self.__line_intensity_max_callback,
+            hueMinDefault=self.__defaultValues.get("line_min_hue", 0),
+            hueMaxDefault=self.__defaultValues.get("line_max_hue", 0),
+            saturationMinDefault=self.__defaultValues.get("line_min_saturation", 0),
+            saturationMaxDefault=self.__defaultValues.get("line_max_saturation", 0),
+            intensityMinDefault=self.__defaultValues.get("line_min_intensity", 0),
+            intensityMaxDefault=self.__defaultValues.get("line_max_intensity", 0)
         )
         self.__frmLineOption.pack()
+        self.__line_hue_min_callback()
+        self.__line_hue_max_callback()
+        self.__line_saturation_min_callback()
+        self.__line_saturation_max_callback()
+        self.__line_intensity_min_callback()
+        self.__line_intensity_max_callback()
 
     def __shadow_hue_min_callback(
         self
     ):
-        self.__imageScanner.lastShadowHueMin = \
+        self.__imageScanner.shadowScanner.lastHueMin = \
             self.__frmShadowOption.hueMin
         
     def __shadow_hue_max_callback(
         self
     ):
-        self.__imageScanner.lastShadowHueMax = \
+        self.__imageScanner.shadowScanner.lastHueMax = \
             self.__frmShadowOption.hueMax
         
     def __shadow_saturation_min_callback(
         self
     ):
-        self.__imageScanner.lastShadowSaturationMin = \
+        self.__imageScanner.shadowScanner.lastSaturationMin = \
             self.__frmShadowOption.saturationMin
         
     def __shadow_saturation_max_callback(
         self
     ):
-        self.__imageScanner.lastShadowSaturationMax = \
+        self.__imageScanner.shadowScanner.lastSaturationMax = \
             self.__frmShadowOption.saturationMax
         
     def __shadow_intensity_min_callback(
         self
     ):
-        self.__imageScanner.lastShadowIntensityMin = \
+        self.__imageScanner.shadowScanner.lastIntensityMin = \
             self.__frmShadowOption.intensityMin
         
     def __shadow_intensity_max_callback(
         self
     ):
-        self.__imageScanner.lastShadowIntensityMax = \
+        self.__imageScanner.shadowScanner.lastIntensityMax = \
             self.__frmShadowOption.intensityMax
 
     def __light_hue_min_callback(
         self
     ):
-        self.__imageScanner.lastLightHueMin = \
+        self.__imageScanner.lightScanner.lastHueMin = \
             self.__frmLightOption.hueMin
         
     def __light_hue_max_callback(
         self
     ):
-        self.__imageScanner.lastLightHueMax = \
+        self.__imageScanner.lightScanner.lastHueMax = \
             self.__frmLightOption.hueMax
         
     def __light_saturation_min_callback(
         self
     ):
-        self.__imageScanner.lastLightSaturationMin = \
+        self.__imageScanner.lightScanner.lastSaturationMin = \
             self.__frmLightOption.saturationMin
         
     def __light_saturation_max_callback(
         self
     ):
-        self.__imageScanner.lastLightSaturationMax = \
+        self.__imageScanner.lightScanner.lastSaturationMax = \
             self.__frmLightOption.saturationMax
         
     def __light_intensity_min_callback(
         self
     ):
-        self.__imageScanner.lastLightIntensityMin = \
+        self.__imageScanner.lightScanner.lastIntensityMin = \
             self.__frmLightOption.intensityMin
         
     def __light_intensity_max_callback(
         self
     ):
-        self.__imageScanner.lastLightIntensityMax = \
+        self.__imageScanner.lightScanner.lastIntensityMax = \
             self.__frmLightOption.intensityMax
 
     def __line_hue_min_callback(
         self
     ):
-        self.__imageScanner.lastLineHueMin = \
+        self.__imageScanner.lineScanner.lastHueMin = \
             self.__frmLineOption.hueMin
         
     def __line_hue_max_callback(
         self
     ):
-        self.__imageScanner.lastLineHueMax = \
+        self.__imageScanner.lineScanner.lastHueMax = \
             self.__frmLineOption.hueMax
         
     def __line_saturation_min_callback(
         self
     ):
-        self.__imageScanner.lastLineSaturationMin = \
+        self.__imageScanner.lineScanner.lastSaturationMin = \
             self.__frmLineOption.saturationMin
         
     def __line_saturation_max_callback(
         self
     ):
-        self.__imageScanner.lastLineSaturationMax = \
+        self.__imageScanner.lineScanner.lastSaturationMax = \
             self.__frmLineOption.saturationMax
         
     def __line_intensity_min_callback(
         self
     ):
-        self.__imageScanner.lastLineIntensityMin = \
+        self.__imageScanner.lineScanner.lastIntensityMin = \
             self.__frmLineOption.intensityMin
         
     def __line_intensity_max_callback(
         self
     ):
-        self.__imageScanner.lastLineIntensityMax = \
+        self.__imageScanner.lineScanner.lastIntensityMax = \
             self.__frmLineOption.intensityMax        
 
 
@@ -311,7 +350,13 @@ class FrmImageOption(ttk.Frame):
         saturationMinCallback: "function",
         saturationMaxCallback: "function",
         intensityMinCallback: "function",
-        intensityMaxCallback: "function" 
+        intensityMaxCallback: "function",
+        hueMinDefault: "int" = 0,
+        hueMaxDefault: "int" = 0,
+        saturationMinDefault: "int" = 0,
+        saturationMaxDefault: "int" = 0,
+        intensityMinDefault: "int" = 0,
+        intensityMaxDefault: "int" = 0,
     ):
         super().__init__(master)
 
@@ -327,12 +372,16 @@ class FrmImageOption(ttk.Frame):
         self.__frmIntensityMax: "FrmImageOptionProperty" = None
 
         self.__create_option_name(optionName)
-        self.__create_frm_hue_min(hueMinCallback)
-        self.__create_frm_hue_max(hueMaxCallback)
-        self.__create_frm_saturation_min(saturationMinCallback)
-        self.__create_frm_saturation_max(saturationMaxCallback)
-        self.__create_frm_intensity_min(intensityMinCallback)
-        self.__create_frm_intensity_max(intensityMaxCallback)
+        self.__create_frm_hue_min(hueMinCallback, hueMinDefault)
+        self.__create_frm_hue_max(hueMaxCallback, hueMaxDefault)
+        self.__create_frm_saturation_min(
+            saturationMinCallback, saturationMinDefault)
+        self.__create_frm_saturation_max(
+            saturationMaxCallback, saturationMaxDefault)
+        self.__create_frm_intensity_min(
+            intensityMinCallback, intensityMinDefault)
+        self.__create_frm_intensity_max(
+            intensityMaxCallback, intensityMaxDefault)
 
     @property
     def hueMin(self):
@@ -373,7 +422,8 @@ class FrmImageOption(ttk.Frame):
 
     def __create_frm_hue_min(
         self,
-        callback: "function"
+        callback: "function",
+        default: "int"
     ):
         self.__frmHueMin = FrmImageOptionProperty(
          self,
@@ -382,7 +432,8 @@ class FrmImageOption(ttk.Frame):
             maxValue=HUE_MAX,
             callback=callback,
             imageView=self.__imageView,
-            imageScanner=self.__imageScanner
+            imageScanner=self.__imageScanner,
+            defaultValue=default
         )
         self.__frmHueMin.grid(
             column=0,
@@ -391,7 +442,8 @@ class FrmImageOption(ttk.Frame):
 
     def __create_frm_hue_max(
         self,
-        callback: "function"
+        callback: "function",
+        default: "int"
     ):
         self.__frmHueMax = FrmImageOptionProperty(
             self,
@@ -400,7 +452,8 @@ class FrmImageOption(ttk.Frame):
             maxValue=HUE_MAX,
             callback=callback,
             imageView=self.__imageView,
-            imageScanner=self.__imageScanner
+            imageScanner=self.__imageScanner,
+            defaultValue=default
         )
         self.__frmHueMax.grid(
             column=0,
@@ -409,7 +462,8 @@ class FrmImageOption(ttk.Frame):
 
     def __create_frm_saturation_min(
         self,
-        callback: "function"
+        callback: "function",
+        default: "int"
     ):
         self.__frmSaturationMin = FrmImageOptionProperty(
             self,
@@ -418,7 +472,8 @@ class FrmImageOption(ttk.Frame):
             maxValue=SATURATION_MAX,
             callback=callback,
             imageView=self.__imageView,
-            imageScanner=self.__imageScanner
+            imageScanner=self.__imageScanner,
+            defaultValue=default
         )
         self.__frmSaturationMin.grid(
             column=1,
@@ -427,7 +482,8 @@ class FrmImageOption(ttk.Frame):
 
     def __create_frm_saturation_max(
         self,
-        callback: "function"
+        callback: "function",
+        default: "int"
     ):
         self.__frmSaturationMax = FrmImageOptionProperty(
             self,
@@ -436,7 +492,8 @@ class FrmImageOption(ttk.Frame):
             maxValue=SATURATION_MAX,
             callback=callback,
             imageView=self.__imageView,
-            imageScanner=self.__imageScanner
+            imageScanner=self.__imageScanner,
+            defaultValue=default
         )
         self.__frmSaturationMax.grid(
             column=1,
@@ -445,7 +502,8 @@ class FrmImageOption(ttk.Frame):
 
     def __create_frm_intensity_min(
         self,
-        callback: "function"
+        callback: "function",
+        default: "int"
     ):
         self.__frmIntensityMin = FrmImageOptionProperty(
             self,
@@ -454,7 +512,8 @@ class FrmImageOption(ttk.Frame):
             maxValue=INTENSITY_MAX,
             callback=callback,
             imageView=self.__imageView,
-            imageScanner=self.__imageScanner
+            imageScanner=self.__imageScanner,
+            defaultValue=default
         )
         self.__frmIntensityMin.grid(
             column=2,
@@ -463,7 +522,8 @@ class FrmImageOption(ttk.Frame):
 
     def __create_frm_intensity_max(
         self,
-        callback: "function"
+        callback: "function",
+        default: "int"
     ):
         self.__frmIntensityMax = FrmImageOptionProperty(
             self,
@@ -472,7 +532,8 @@ class FrmImageOption(ttk.Frame):
             maxValue=INTENSITY_MAX,
             callback=callback,
             imageView=self.__imageView,
-            imageScanner=self.__imageScanner
+            imageScanner=self.__imageScanner,
+            defaultValue=default
         )
         self.__frmIntensityMax.grid(
             column=2,
@@ -490,13 +551,15 @@ class FrmImageOptionProperty(ttk.Frame):
         maxValue: "int",
         callback: "function",
         imageView: "FrmImageView",
-        imageScanner: "ImageScanner"   
+        imageScanner: "ImageScanner",
+        defaultValue: "int" = 0   
     ):
         super().__init__(master)
 
         self.__callback = callback
         self.__imageView: "FrmImageView" = imageView
         self.__imageScanner: "ImageScanner" = imageScanner
+        self.__defaultValue: "int" = defaultValue
 
         self.__lblPropertyName: "ttk.Label" = None
         self.__varPropertyValue: "IntVar" = None
@@ -541,7 +604,10 @@ class FrmImageOptionProperty(ttk.Frame):
     def __create_var_property_value(
         self
     ):
-        self.__varPropertyValue = IntVar(self)
+        self.__varPropertyValue = IntVar(
+            self,
+            value=self.__defaultValue
+        )
 
     def __base_callback(
         self
@@ -625,7 +691,8 @@ class FrmApp(ttk.Frame):
         self.__frmImageOptions = FrmImageOptions(
             self,
             imageView=self.__frmImageView,
-            imageScanner=self.__imageScanner
+            imageScanner=self.__imageScanner,
+            defaultValues=config
         )
         self.__frmImageOptions.pack()
 

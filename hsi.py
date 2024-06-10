@@ -11,11 +11,15 @@ class HSI:
 
     def __init__(
         self, 
-        imgRGB
+        imgRGB: "cv2.Mat"
     ):
-        self.__chR = None
-        self.__chG = None
-        self.__chB = None
+        self.__chR: "cv2.Mat" = None
+        self.__chG: "cv2.Mat" = None
+        self.__chB: "cv2.Mat" = None
+
+        self.__hue: "cv2.Mat" = None
+        self.__saturation: "cv2.Mat" = None
+        self.__intensity: "cv2.Mat" = None
 
         self.__setup(imgRGB)
 
@@ -33,6 +37,10 @@ class HSI:
         )
         self.__chR, self.__chG, self.__chB = cv2.split(imgRGB)
 
+        self.calculate_hue()
+        self.calculate_saturation()
+        self.calculate_intensity()
+
     def calculate_hue(
         self
     ):
@@ -48,8 +56,7 @@ class HSI:
         hue[self.__chB > self.__chG] = (
             ((360 * numpy.pi) / 180) - hue[self.__chB > self.__chG])
         hue = hue * (HUE_MAX / 2 / numpy.pi)
-
-        return hue
+        self.__hue = hue
         
     def calculate_saturation(
         self
@@ -64,8 +71,7 @@ class HSI:
         ])
         saturation = 1 - (3 * (minRGB / sumRGB))
         saturation *= SATURATION_MAX
-
-        return saturation
+        self.__saturation = saturation
 
     def calculate_intensity(
         self
@@ -73,8 +79,7 @@ class HSI:
         sumRGB = (self.__chR + self.__chG + self.__chB)
         intensity = sumRGB / 3
         intensity *= INTENSITY_MAX
-
-        return intensity
+        self.__intensity = intensity
 
     def convert_rgb_to_hsi(
         self
@@ -93,8 +98,8 @@ class HSI:
         maxSaturation: "float" = SATURATION_MAX,
         minIntensity: "float" = 0,
         maxIntensity: "float" = INTENSITY_MAX,
-    ):
-        h, s, i = self.convert_rgb_to_hsi()
+    ) -> "cv2.Mat":
+        h, s, i = self.__hue, self.__saturation, self.__intensity
 
         hueCheck1stCase = (h >= minHue) & (h <= maxHue)
         hueCheck2ndCase = (minHue > maxHue) & \
