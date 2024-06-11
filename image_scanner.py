@@ -170,8 +170,8 @@ class ImageScanner:
         lineColor = [0, 0, 0] # black in BGR
 
         scannedImage = numpy.ones(self.__imageRGB.shape) * 255
-        scannedImage[self.__lineScanner.lastScan == 1] = lineColor
-        scannedImage[self.__lightScanner.lastScan == 1] = lightColor
         scannedImage[self.__shadowScanner.lastScan == 1] = shadowColor
+        scannedImage[self.__lightScanner.lastScan == 1] = lightColor
+        scannedImage[self.__lineScanner.lastScan == 1] = lineColor
 
         cv2.imwrite(self.__outputImagePath, scannedImage)

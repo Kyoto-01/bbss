@@ -12,7 +12,7 @@ config = {
     "light_min_intensity": 0,
     "light_max_intensity": 200,
     "line_min_hue": 0,
-    "line_max_hue": 360,
+    "line_max_hue": 180,
     "line_min_saturation": 0,
     "line_max_saturation": 100,
     "line_min_intensity": 0,
