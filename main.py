@@ -33,33 +33,55 @@ class FrmImageView(Canvas):
 			height=700,
 			background="gray75"
 		)
-		self.create_line(10, 5, 200, 500)
+		
 		self.__imagePath: "str" = imagePath
-		self.__image: "ImageTk" = None
+		self.__image: "Image" = None
+		self.__imageTk: "ImageTk" = None
+		
+		self.bind("<Button-4>", self.__zoom_in)
+		self.bind("<Button-5>", self.__zoom_out)
 
-		self.__lblImage: "ttk.Label" = None
-
-		self.__create_lbl_image()
-
-	def __create_lbl_image(
-		self
+	def __zoom_in(
+		self,
+		event
 	):
-		self.__lblImage = ttk.Label(self)
-		self.__lblImage.pack()
+		if self.__image and self.__image.width < 1000 and self.__image.height < 1400:
+			width, height = int(self.__image.width * 1.1), int(self.__image.height * 1.1)
+			self.__image = Image.open(self.__imagePath)
+			self.__image = self.__image.resize((width, height))
+			self.__imageTk = ImageTk.PhotoImage(self.__image)
+			self.delete("all")
+			self.create_image(0, 0, image=self.__imageTk, anchor="nw")
+		else:
+			self.update_image()
 
+	def __zoom_out(
+		self,
+		event
+	):
+		if self.__image and self.__image.width > 0 and self.__image.height > 0:
+			width, height = int(self.__image.width / 1.1), int(self.__image.height / 1.1)
+			self.__image = Image.open(self.__imagePath)
+			self.__image = self.__image.resize((width, height))
+			self.__imageTk = ImageTk.PhotoImage(self.__image)
+			self.delete("all")
+			self.create_image(0, 0, image=self.__imageTk, anchor="nw")
+		else:
+			self.update_image()
+		
 	def update_image(
 		self
 	):
-		image = Image.open(self.__imagePath)
-		base_width = 500
-		wpercent = (base_width / float(image.size[0]))
-		hsize = int((float(image.size[1]) * float(wpercent)))
-		image = image.resize(
-			size=(base_width, hsize), 
-			resample=Image.Resampling.LANCZOS
-		)
-		self.__image = ImageTk.PhotoImage(image)
-		self.__lblImage.configure(image=self.__image)
+		self.__image = Image.open(self.__imagePath)
+		# ~ hsize = (500 / float(self.__image.width))
+		# ~ vsize = int((float(image.size[1]) * float(wpercent)))
+		# ~ self.__image = self.__image.resize(
+			# ~ size=(base_width, hsize), 
+			# ~ resample=Image.Resampling.LANCZOS
+		# ~ )
+		self.__imageTk = ImageTk.PhotoImage(self.__image)
+		self.delete("all")
+		self.create_image(0, 0, image=self.__imageTk, anchor="nw")
 
 	def save_image(
 		self,
