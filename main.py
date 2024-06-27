@@ -22,6 +22,11 @@ from startup_config import config
 
 class FrmImageView(Canvas):
 	
+	WIDTH = 500
+	HEIGHT = 700
+	MAIN_BG = "gray75"
+	ZOOM_WEIGHT = 1.1
+	
 	def __init__(
 		self,
 		master: "Misc",
@@ -29,57 +34,63 @@ class FrmImageView(Canvas):
 	):
 		super().__init__(
 			master,
-			width=500,
-			height=700,
-			background="gray75"
+			width=self.__class__.WIDTH,
+			height=self.__class__.HEIGHT,
+			background=self.__class__.MAIN_BG
 		)
 		
 		self.__imagePath: "str" = imagePath
 		self.__image: "Image" = None
 		self.__imageTk: "ImageTk" = None
+		self.__imageZoomWidth: "float" = None
+		self.__imageZoomHeight: "float" = None
 		
-		self.bind("<Button-4>", self.__zoom_in)
-		self.bind("<Button-5>", self.__zoom_out)
+		self.__setup_events()
+		
+	def __setup_events(
+		self
+	):
+		self.bind("<Button-4>", self.__ev_zoom_in)
+		self.bind("<Button-5>", self.__ev_zoom_out)
 
-	def __zoom_in(
+	def __ev_zoom_in(
 		self,
 		event
 	):
-		if self.__image and self.__image.width < 1000 and self.__image.height < 1400:
-			width, height = int(self.__image.width * 1.1), int(self.__image.height * 1.1)
+		if self.__image:
+			self.__imageZoomWidth *= self.__class__.ZOOM_WEIGHT
+			self.__imageZoomHeight *= self.__class__.ZOOM_WEIGHT
+			self.__update_zoom()
+
+	def __ev_zoom_out(
+		self,
+		event
+	):
+		if self.__image:
+			self.__imageZoomWidth /= self.__class__.ZOOM_WEIGHT
+			self.__imageZoomHeight /= self.__class__.ZOOM_WEIGHT
+			self.__update_zoom()
+			
+	def __update_zoom(
+		self
+	):
+		width = int(self.__imageZoomWidth)
+		height = int(self.__imageZoomHeight)
+		
+		if (width > 0 and height > 0):
 			self.__image = Image.open(self.__imagePath)
 			self.__image = self.__image.resize((width, height))
 			self.__imageTk = ImageTk.PhotoImage(self.__image)
 			self.delete("all")
 			self.create_image(0, 0, image=self.__imageTk, anchor="nw")
-		else:
-			self.update_image()
 
-	def __zoom_out(
-		self,
-		event
-	):
-		if self.__image and self.__image.width > 0 and self.__image.height > 0:
-			width, height = int(self.__image.width / 1.1), int(self.__image.height / 1.1)
-			self.__image = Image.open(self.__imagePath)
-			self.__image = self.__image.resize((width, height))
-			self.__imageTk = ImageTk.PhotoImage(self.__image)
-			self.delete("all")
-			self.create_image(0, 0, image=self.__imageTk, anchor="nw")
-		else:
-			self.update_image()
-		
 	def update_image(
 		self
 	):
 		self.__image = Image.open(self.__imagePath)
-		# ~ hsize = (500 / float(self.__image.width))
-		# ~ vsize = int((float(image.size[1]) * float(wpercent)))
-		# ~ self.__image = self.__image.resize(
-			# ~ size=(base_width, hsize), 
-			# ~ resample=Image.Resampling.LANCZOS
-		# ~ )
 		self.__imageTk = ImageTk.PhotoImage(self.__image)
+		self.__imageZoomWidth = self.__image.width
+		self.__imageZoomHeight = self.__image.height
 		self.delete("all")
 		self.create_image(0, 0, image=self.__imageTk, anchor="nw")
 
