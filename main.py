@@ -26,6 +26,7 @@ class FrmImageView(Canvas):
 	HEIGHT = 700
 	MAIN_BG = "gray75"
 	ZOOM_WEIGHT = 1.1
+	MOVE_SPEED = 0.03
 	
 	def __init__(
 		self,
@@ -44,12 +45,18 @@ class FrmImageView(Canvas):
 		self.__imageTk: "ImageTk" = None
 		self.__imageZoomWidth: "float" = None
 		self.__imageZoomHeight: "float" = None
+		self.__imagePosX: "int" = None
+		self.__imagePosY: "int" = None
+		self.__clickedPosX: "int" = None
+		self.__clickedPosY: "int" = None
 		
 		self.__setup_events()
 		
 	def __setup_events(
 		self
 	):
+		self.bind("<Button-1>", self.__ev_save_clicked_pos)
+		self.bind("<B1-Motion>", self.__ev_move)
 		self.bind("<Button-4>", self.__ev_zoom_in)
 		self.bind("<Button-5>", self.__ev_zoom_out)
 
@@ -60,7 +67,7 @@ class FrmImageView(Canvas):
 		if self.__image:
 			self.__imageZoomWidth *= self.__class__.ZOOM_WEIGHT
 			self.__imageZoomHeight *= self.__class__.ZOOM_WEIGHT
-			self.__update_zoom()
+			self.update_image()
 
 	def __ev_zoom_out(
 		self,
@@ -69,9 +76,46 @@ class FrmImageView(Canvas):
 		if self.__image:
 			self.__imageZoomWidth /= self.__class__.ZOOM_WEIGHT
 			self.__imageZoomHeight /= self.__class__.ZOOM_WEIGHT
-			self.__update_zoom()
+			self.update_image()
 			
-	def __update_zoom(
+	def __ev_save_clicked_pos(
+		self,
+		event
+	):
+		self.__clickedPosX = event.x
+		self.__clickedPosY = event.y
+		
+	def __ev_move(
+		self,
+		event
+	):
+		if self.__image:
+			self.__imagePosX += int(
+				(event.x - self.__clickedPosX) * 
+				self.__class__.MOVE_SPEED
+			)
+			self.__imagePosY += int(
+				(event.y - self.__clickedPosY) * 
+				self.__class__.MOVE_SPEED
+			)
+			if self.__imagePosX < -self.__imageZoomWidth:
+				self.__imagePosX = -self.__imageZoomWidth
+			if self.__imagePosX > self.__class__.WIDTH:
+				self.__imagePosX = self.__class__.WIDTH
+			if self.__imagePosY < -self.__imageZoomHeight:
+				self.__imagePosY = -self.__imageZoomHeight
+			if self.__imagePosY > self.__class__.HEIGHT:
+				self.__imagePosY = self.__class__.HEIGHT
+				
+			self.delete("all")
+			self.create_image(
+				self.__imagePosX, 
+				self.__imagePosY, 
+				image=self.__imageTk, 
+				anchor="nw"
+			)
+			
+	def update_image(
 		self
 	):
 		width = int(self.__imageZoomWidth)
@@ -79,20 +123,35 @@ class FrmImageView(Canvas):
 		
 		if (width > 0 and height > 0):
 			self.__image = Image.open(self.__imagePath)
-			self.__image = self.__image.resize((width, height))
+			self.__image = self.__image.resize(
+				(width, height), 
+				resample=Image.Resampling.NEAREST
+			)
 			self.__imageTk = ImageTk.PhotoImage(self.__image)
 			self.delete("all")
-			self.create_image(0, 0, image=self.__imageTk, anchor="nw")
-
-	def update_image(
+			self.create_image(
+				self.__imagePosX, 
+				self.__imagePosY, 
+				image=self.__imageTk, 
+				anchor="nw"
+			)
+			
+	def load_image(
 		self
 	):
 		self.__image = Image.open(self.__imagePath)
 		self.__imageTk = ImageTk.PhotoImage(self.__image)
 		self.__imageZoomWidth = self.__image.width
 		self.__imageZoomHeight = self.__image.height
+		self.__imagePosX = 0
+		self.__imagePosY = 0
 		self.delete("all")
-		self.create_image(0, 0, image=self.__imageTk, anchor="nw")
+		self.create_image(
+			self.__imagePosX, 
+			self.__imagePosY, 
+			image=self.__imageTk, 
+			anchor="nw"
+		)
 
 	def save_image(
 		self,
@@ -145,9 +204,10 @@ class FrmImageFile(ttk.Frame):
 			title="Select an image",
 			initialdir="/"
 		)
-		self.__imageScanner.inputImagePath = inputImage
-		self.__imageScanner.scan_image()
-		self.__imageView.update_image()   
+		if inputImage:
+			self.__imageScanner.inputImagePath = inputImage
+			self.__imageScanner.scan_image()
+			self.__imageView.load_image()   
 
 	def __save_image(self):
 		dstDirectory = filedialog.asksaveasfilename(
@@ -155,7 +215,8 @@ class FrmImageFile(ttk.Frame):
 			initialdir="/",
 			defaultextension=".bmp"
 		)
-		self.__imageView.save_image(dstDirectory)
+		if dstDirectory:
+			self.__imageView.save_image(dstDirectory)
 
 
 class FrmImageOptions(ttk.Frame):
