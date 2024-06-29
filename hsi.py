@@ -13,6 +13,7 @@ class HSI:
 		self, 
 		imgRGB: "cv2.Mat"
 	):
+		self.__imgRGB: "cv2.Mat" = imgRGB
 		self.__chR: "cv2.Mat" = None
 		self.__chG: "cv2.Mat" = None
 		self.__chB: "cv2.Mat" = None
@@ -21,14 +22,13 @@ class HSI:
 		self.__saturation: "cv2.Mat" = None
 		self.__intensity: "cv2.Mat" = None
 
-		self.__setup(imgRGB)
+		self.__setup()
 
 	def __setup(
-		self, 
-		imgRGB
+		self
 	):
 		imgRGB = cv2.normalize(
-			src=imgRGB, 
+			src=self.__imgRGB, 
 			dst=None, 
 			alpha=0, 
 			beta=1, 
@@ -40,6 +40,13 @@ class HSI:
 		self.calculate_hue()
 		self.calculate_saturation()
 		self.calculate_intensity()
+		
+	def update_imgRGB(
+		self,
+		imgRGB: "cv2.Mat"
+	):
+		self.__imgRGB = imgRGB
+		self.__setup()
 
 	def calculate_hue(
 		self

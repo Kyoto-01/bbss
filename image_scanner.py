@@ -160,7 +160,10 @@ class ImageScanner:
 	
 	def scan_image(
 		self
-	):		
+	):
+		self.__imageRGB = cv2.GaussianBlur(self.__imageRGB, (5, 5), 5, 5)
+		self.__hsiFilter.update_imgRGB(self.__imageRGB)
+		
 		self.__shadowScanner.scan_image()
 		self.__lightScanner.scan_image()
 		self.__lineScanner.scan_image()
