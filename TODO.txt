@@ -1,2 +1,1 @@
-1) Create canvas to permit zoom in, zoom out and move;
 2) Create pre-scan and post-scan image processing routines.
