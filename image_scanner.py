@@ -160,7 +160,7 @@ class ImageScanner:
 	
 	def scan_image(
 		self
-	):
+	):		
 		self.__shadowScanner.scan_image()
 		self.__lightScanner.scan_image()
 		self.__lineScanner.scan_image()
